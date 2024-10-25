@@ -19,12 +19,59 @@ app.get("/", function (req, res) {
 });
 
 
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+//your first API endpoint... 
+
+app.get("/api/", function (req, res) {
+  res.json({
+    unix: new Date().getTime(),
+    utc: new Date().toUTCString()
+  })
+});
+
+app.get('/api/:time', (req, res) => {
+  const time = req.params.time;
+
+  let date;
+
+  if(time) {
+    if(!isNaN(time)) {
+      date = new Date(parseInt(time));
+    } else {
+      date = new Date(time)
+    }
+  } 
+  
+  if(isNaN(date.getTime())) {
+    return res.json({error: 'invalid Date'})
+  }
+
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  });
+
 });
 
 
+
+// app.get('/api/:date', (req, res) => {
+//   const date = req.params.date;
+
+//   const parsedDate = !date
+//     ? new Date()
+//     : isNaN(date)
+//     ? new Date(date)
+//     : new Date(parseInt(date));
+
+//     if (isNaN(parsedDate.getTime())) {
+//       return res.json('invalid Date')
+//     }
+
+//     res.json({
+//       unix: parsedDate.getTime(),
+//       utc: parsedDate.toUTCString()
+//     });
+// })
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
